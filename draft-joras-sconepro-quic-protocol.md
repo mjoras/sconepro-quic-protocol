@@ -23,7 +23,7 @@ title: "SCONEPRO QUIC Protocol"
 abbrev: "SCONEPRO QUIC Protocol"
 category: info
 
-docname: draft-todo-yourname-protocol-latest
+docname: draft-joras-sconepro-quic-protocol-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
