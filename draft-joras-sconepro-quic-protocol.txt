@@ -1,0 +1,257 @@
+
+
+
+
+Network Working Group                                           M. Joras
+Internet-Draft                                      Meta Platforms, Inc.
+Intended status: Informational                                  M. Ihlar
+Expires: 26 December 2024                                       Ericsson
+                                                            24 June 2024
+
+
+                         SCONEPRO QUIC Protocol
+               draft-joras-sconepro-quic-protocol-latest
+
+Abstract
+
+   This document describes the wire protocol and procedures that can be
+   used to achieve endpoint to network communication of properties, for
+   the purposes of video self adaptation by a content endpoint.
+
+Discussion Venues
+
+   This note is to be removed before publishing as an RFC.
+
+   Discussion of this document takes place on the Secure Communication
+   of Network Properties Working Group mailing list (sadcdn@ietf.org),
+   which is archived at https://mailarchive.ietf.org/arch/browse/
+   sadcdn/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/mjoras/sconepro-quic-protocol.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 26 December 2024.
+
+Copyright Notice
+
+   Copyright (c) 2024 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+   2.  Conventions and Definitions
+   3.  New QUIC Version
+   4.  Version Field
+   5.  Long Header Packet Types
+   6.  Initial Salt
+   7.  HKDF Labels
+   8.  Stream and Frame Usage
+   9.  Communication Overview
+   10. On Path Verification
+   11. Sample Frame
+   12. Extensibility To Provide Confidentiality and Authenticity
+   13. Security Considerations
+   14. IANA Considerations
+   15. Normative References
+   Acknowledgments
+   Authors' Addresses
+
+1.  Introduction
+
+   The basic idea of SCONEPRO is to utilize similar technology to QUIC
+   [RFC 9000], employing a second independent flow between a client
+   endpoint and devices in the network.  This independent flow uses a
+   separate version of QUIC.  This document will not describe what
+   information is exchanged for these properties, but rather the overall
+   way in which the communication functions.
+
+2.  Conventions and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+3.  New QUIC Version
+
+   In QUIC version 1 defined in RFC 9000, there are different packet
+   types for different phases of the connection. “Long headers” are used
+   for sending messages that are part of the TLS handshake.  These
+   packets are encrypted but not private and use publicly-known keys.
+   They also have an explicit packet length.  After the handshake is
+   completed endpoints switch to using “short header” packets which are
+   encrypted privately.  For SCONEPRO we define a new version of QUIC
+   which exclusively uses Long header packets.  For the purposes of this
+   document these packets will also exclusively be encrypted using
+   public keys.  Note that a further extension allowing communication
+   with private keys and short header packets is feasible.
+
+4.  Version Field
+
+   The version field of Long Headers in this QUIC version is 0x5509c337,
+   which was a value chosen at random.
+
+5.  Long Header Packet Types
+
+   This version of QUIC for now only specifies the long header packet
+   type of Initial, unchanged from QUIC version 1 as 0b00.  Long Header
+   packet types for Handshake may be added if a full TLS handshake
+   mechanism is added to this version of QUIC.
+
+6.  Initial Salt
+
+   This version of QUIC uses an altered initial salt to derive the
+   Initial Keys, specifically
+   initial_salt=0x6784619005cadc9bb961ec4d31b76892eb1b567e
+
+7.  HKDF Labels
+
+   The labels used in [QUIC-TLS] to derive packet protection keys
+   (Section 5.1), header protection keys (Section 5.4) change from "quic
+   key" to "quicscone key", from "quic iv" to "quicscone iv", from "quic
+   hp" to "quicscone hp", to meet the guidance for new versions in
+   Section 9.6 of that document.
+
+8.  Stream and Frame Usage
+
+   This version of QUIC does not utilize the vast majority of frames
+   used in QUIC version one.  The main one that is needed are STREAM
+   frames as defined in section 19.8 of RFC 9000.  Unlike RFC 9000,
+   there is only a single stream that is valid in this version of QUIC,
+   with stream ID of 0, initiated by the client.  There is no flow
+   control associated with this stream.  This document does not define
+   the contents of the stream.
+
+9.  Communication Overview
+
+   The goal of SCONEPRO is to provide a way to communicate properties
+   between an on-path network device and a QUIC client endpoint, with
+   the QUIC client responsible for the initiation of that communication.
+
+   Before establishing the SCONEPRO communication, a QUIC client
+   establishes its normal end to end connection as per usual from RFC
+   9000.  Once this is done, the client opportunistically sends a
+   SCONEPRO QUIC Initial destined to the same endpoint IP address and
+   port.  This Initial can be be parsed by any SCONEPRO-capable network
+   element on the path.  A SCONEPRO-capable elements SHOULD forward
+   these packets in the normal fashion, such that all SCONEPRO-capable
+   devices can see its contents.  All SCONEPRO-capable elements are able
+   to respond in a similar fashion, by creating their own SCONEPRO QUIC
+   packets and sending it to the SCONEPRO QUIC client matching the IP/
+   port tuple being utilized by the end to end QUIC connection.
+
+   The SCONEPRO QUIC client MUST be able to distinguish the end to end
+   QUIC packets and the SCONEPRO QUIC packets.  This can be done by
+   looking for the pattern of the SCONEPRO packet, combined with trial
+   decryption.
+
+10.  On Path Verification
+
+   SCONEPRO communication MUST only be done with network elements that
+   can be verified to be on the same network path as an end to end QUIC
+   flow.  This is because SCONEPRO communication is only meant to be
+   done with network elements that have the ability to, for example,
+   modify and drop packets relevant to an end to end QUIC flow.  As
+   SCONEPRO QUIC packets are themselves carried in separate UDP
+   datagrams from the end to end QUIC flow, there is not an inherent
+   guarantee that they were generated by a network element.  To combat
+   this without requiring a full TLS handshake, SCONEPRO network element
+   MUST include a sample of a SCONEPRO initial from the QUIC client.
+   This gives the SCONEPRO QUIC client credible reason that the
+   information received was generated by an element on the forwarding
+   path.  This is accomplished through SAMPLE frames.
+
+11.  Sample Frame
+
+   A sample frame is a very simple construct meant to contain the first
+   N bytes of the entropy (i.e. the encrypted portion) of a SCONEPRO
+   initial.  A SCONEPRO-capable network element SHOULD send at least 32
+   bytes from one of these packets.
+
+   SAMPLE Frame { Type (i) = 0xe3754d5b, Length (i), Sample Data (..), }
+
+   To verify the data in a SAMPLE frame, a SCONEPRO QUIC client must
+   track the first 32 bytes of the SCONEPRO initials it sent to initiate
+   the communication, to compare against the SAMPLE frames received from
+   the network element.
+
+12.  Extensibility To Provide Confidentiality and Authenticity
+
+   The use of QUIC initials explicitly does not allow for
+   confidentiality or authenticity of the communication.  The only
+   manner of authenticity defined in this document is verification of
+   the on-path nature of a network element.  It may be desirable for
+   SCONEPRO to be extended to allow for confidentiality and
+   authenticity.
+
+   Confidentiality with this protocol could be achieved by further
+   leveraging the provisions of QUIC version 1 to do a TLS handshake
+   between the SCONEPRO QUIC client and a SCONEPRO-capable network
+   element.  Authenticity could similarly leverage the provisions of
+   TLS.  However, this comes with significant complications.  TLS
+   achieves authenticity by using Public Key Infrastructure (PKI), where
+   each participant can choose to trust the certificate offered by their
+   peer.  While this PKI exists today for Internet endpoints, there is
+   no such existing PKI for network elements.  It is important to note
+   that conducting a TLS handshake would restrict the communication
+   between the QUIC client and exactly one on-path network element.
+
+13.  Security Considerations
+
+   TODO Security
+
+14.  IANA Considerations
+
+   QUIC version.
+
+15.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+Acknowledgments
+
+   TODO acknowledge.
+
+Authors' Addresses
+
+   Matt Joras
+   Meta Platforms, Inc.
+   Email: matt.joras@gmail.com
+
+
+   Marcus Ihlar
+   Ericsson
+   Email: marcus.ihlar@ericsson.com
