@@ -5,8 +5,8 @@
 Network Working Group                                           M. Joras
 Internet-Draft                                      Meta Platforms, Inc.
 Intended status: Informational                                  M. Ihlar
-Expires: 26 December 2024                                       Ericsson
-                                                            24 June 2024
+Expires: 4 January 2025                                         Ericsson
+                                                             3 July 2024
 
 
                          SCONEPRO QUIC Protocol
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 December 2024.
+   This Internet-Draft will expire on 4 January 2025.
 
 Copyright Notice
 
@@ -83,12 +83,12 @@ Table of Contents
 
 1.  Introduction
 
-   The basic idea of SCONEPRO is to utilize similar technology to QUIC
-   [RFC 9000], employing a second independent flow between a client
-   endpoint and devices in the network.  This independent flow uses a
-   separate version of QUIC.  This document will not describe what
-   information is exchanged for these properties, but rather the overall
-   way in which the communication functions.
+   The basic idea of SCONEPRO is to use an independent flow between a
+   client endpoint and devices in the network, in parallel to an end-to-
+   end QUIC connection [RFC 9000], to exchange network properties.  This
+   independent flow uses a separate version of QUIC.  This document will
+   not describe what information is exchanged for these properties, but
+   rather the overall way in which the communication functions.
 
 2.  Conventions and Definitions
 
