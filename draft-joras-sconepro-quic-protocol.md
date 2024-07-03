@@ -39,11 +39,12 @@ video self adaptation by a content endpoint.
 
 # Introduction
 
-The basic idea of SCONEPRO is to utilize similar technology to QUIC [RFC 9000],
-employing a second independent flow between a client endpoint and devices in
-the network. This independent flow uses a separate version of QUIC. This
-document will not describe what information is exchanged for these properties,
-but rather the overall way in which the communication functions.
+The basic idea of SCONEPRO is to use an independent flow between a client
+endpoint and devices in the network, in parallel to an end-to-end QUIC
+connection [RFC 9000], to exchange network properties. This independent flow
+uses a separate version of QUIC. This document will not describe what
+information is exchanged for these properties, but rather the overall way in
+which the communication functions.
 
 
 # Conventions and Definitions
