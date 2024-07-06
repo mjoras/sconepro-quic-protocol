@@ -10,13 +10,21 @@ Expires: 7 January 2025                                         Ericsson
 
 
                          SCONEPRO QUIC Protocol
-               draft-joras-sconepro-quic-protocol-latest
+             draft-joras-sconepro-quic-protocol-alt-latest
 
 Abstract
 
-   This document describes the wire protocol and procedures that can be
-   used to achieve endpoint to network communication of properties, for
-   the purposes of video self adaptation by a content endpoint.
+   This document describes a wire format and a set of procedures used to
+   communicate network properties between a content endpoint and an on-
+   path device.  The network properties are intended to enable self-
+   adaptation of video media rates by content endpoints.
+
+   The wire format in this document is defined as a new version of QUIC
+   that adheres to the version-independent properties of QUIC specified
+   in RFC 8999.  Messages are sent adjacent to already established QUIC
+   version 1 or version 2 connections on the same UDP 4-tuple.  This
+   version of QUIC uses long headers for all its communication, and
+   packet protection is achieved using publicly known keys.
 
 Discussion Venues
 
@@ -66,18 +74,20 @@ Table of Contents
    1.  Introduction
    2.  Conventions and Definitions
    3.  New QUIC Version
-   4.  Version Field
-   5.  Long Header Packet Types
-   6.  Initial Salt
-   7.  HKDF Labels
-   8.  Stream and Frame Usage
-   9.  Communication Overview
-   10. On Path Verification
-   11. Sample Frame
-   12. Extensibility To Provide Confidentiality and Authenticity
-   13. Security Considerations
-   14. IANA Considerations
-   15. Normative References
+   4.  Long Header Packet Format
+   5.  Packet Protection
+     5.1.  Public Salt
+     5.2.  HKDF Labels
+   6.  Frames
+     6.1.  Padding Frame
+     6.2.  Data Frame
+     6.3.  Alternative Hosts Frame
+   7.  Communication Overview
+   8.  On Path Verification
+   9.  Extensibility To Provide Confidentiality and Authenticity
+   10. Security Considerations
+   11. IANA Considerations
+   12. Normative References
    Acknowledgments
    Authors' Addresses
 
@@ -90,6 +100,12 @@ Table of Contents
    not describe what information is exchanged for these properties, but
    rather the overall way in which the communication functions.
 
+   The version of QUIC defined in this document protects packets using
+   publicly known keys, which means that confidentiality and integrity
+   of protocol payload cannot be guaranteed.  The document describes how
+   a connection can be upgraded to a QUIC version that supports full TLS
+   protection.
+
 2.  Conventions and Definitions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -100,37 +116,86 @@ Table of Contents
 
 3.  New QUIC Version
 
-   In QUIC version 1 defined in RFC 9000, there are different packet
-   types for different phases of the connection. “Long headers” are used
-   for sending messages that are part of the TLS handshake.  These
-   packets are encrypted but not private and use publicly-known keys.
-   They also have an explicit packet length.  After the handshake is
-   completed endpoints switch to using “short header” packets which are
-   encrypted privately.  For SCONEPRO we define a new version of QUIC
-   which exclusively uses Long header packets.  For the purposes of this
-   document these packets will also exclusively be encrypted using
-   public keys.  Note that a further extension allowing communication
-   with private keys and short header packets is feasible.
+   RFC 8999 defines the version independent properties of QUIC to
+   consist of long and short header packets and version negotiation
+   packets.  This document defines a new version of QUIC which
+   exclusively uses Long header packets.
 
-4.  Version Field
+   This version of QUIC has a single packet type, and a set of frame
+   types used to communicate network properties.  Furthermore, packets
+   are protected using publicly-know keys, similar to the way Initial
+   packets are protected in QUIC version 1.
 
-   The version field of Long Headers in this QUIC version is 0x5509c337,
-   which was a value chosen at random.
+4.  Long Header Packet Format
 
-5.  Long Header Packet Types
+   This version of QUIC only uses long header packets with the following
+   format:
 
-   This version of QUIC for now only specifies the long header packet
-   type of Initial, unchanged from QUIC version 1 as 0b00.  Long Header
-   packet types for Handshake may be added if a full TLS handshake
-   mechanism is added to this version of QUIC.
+   Long Header Packet {
+     Header Form (1) = 1,
+     Fixed Bit (1) = 0,
+     Packet Type (2) = 0,
+     Reserved Bits (4),
+     Version (32),
+     Destination Connection ID Length (8),
+     Destination Connection ID (0..160),
+     Source Connection ID Length (8),
+     Source Connection ID (0..160),
+     Payload (..),
+   }
 
-6.  Initial Salt
+   Header Form:  The most significant bit (0x80) of byte 0 (the first
+      byte) is set to 1 for long headers.
 
-   This version of QUIC uses an altered initial salt to derive the
-   Initial Keys, specifically
-   initial_salt=0x6784619005cadc9bb961ec4d31b76892eb1b567e
+   Fixed Bit:  The next bit (0x40) of byte 0 is set to 1.
 
-7.  HKDF Labels
+   Packet Type:  The next two bits contain a packet type.  A single
+      packet type is defined for this protocol with the value 0b00.
+      Future extensions MAY add new packet types.  A network device MUST
+      ignore packets with unknown packet types and SHOULD forward such
+      packets.
+
+   Reserved Bits:  These bits are reserved for future use and SHOULD be
+      set to 0.
+
+   Version:  This QUIC version uses the value 0x5509c337, which was
+      chosen at random.
+
+   Destination Connection ID Length:  The byte following the version
+      contains the length in bytes of the Destination Connection ID
+      field that follows it.  This length is encoded as an 8-bit
+      unsigned integer.
+
+   Destination Connection ID:  The Destination Connection ID field
+      follows the Destination Connection ID Length field, which
+      indicates the length of this field.
+
+   Source Connection ID Length:  The byte following the Destination
+      Connection ID contains the length in bytes of the Source
+      Connection ID field that follows it.  This length is encoded as an
+      8-bit unsigned integer.
+
+   Source Connection ID:  The Source Connection ID field follows the
+      Source Connection ID Length field, which indicates the length of
+      this field.
+
+5.  Packet Protection
+
+   This version of QUIC uses packet protection as defined for Initial
+   packets in section 5 of [QUIC-TLS].
+
+   This version of QUIC does not use packet numbers, therefore nonces
+   are created by combining the intial destination connection ID with
+   the source connection ID of the packet.  Each SCONEPRO QUIC packet
+   mus use a randomly generated source connection ID with a high
+   probability of being unique.
+
+5.1.  Public Salt
+
+   A publicly known salt is used to derive the secrets, specifically
+   sconepro_salt=0x6784619005cadc9bb961ec4d31b76892eb1b567e.
+
+5.2.  HKDF Labels
 
    The labels used in [QUIC-TLS] to derive packet protection keys
    (Section 5.1), header protection keys (Section 5.4) change from "quic
@@ -138,17 +203,47 @@ Table of Contents
    hp" to "quicscone hp", to meet the guidance for new versions in
    Section 9.6 of that document.
 
-8.  Stream and Frame Usage
+6.  Frames
 
-   This version of QUIC does not utilize the vast majority of frames
-   used in QUIC version one.  The main one that is needed are STREAM
-   frames as defined in section 19.8 of RFC 9000.  Unlike RFC 9000,
-   there is only a single stream that is valid in this version of QUIC,
-   with stream ID of 0, initiated by the client.  There is no flow
-   control associated with this stream.  This document does not define
-   the contents of the stream.
+   The payload of a SCONEPRO QUIC packet consists of a sequence of
+   frames.  Frames consist of a type field optionally followed by type
+   specific payload.
 
-9.  Communication Overview
+6.1.  Padding Frame
+
+   Padding frames are defined in section 19.1 of [RFC9000] and are used
+   to increase the size of a packet.
+
+   PADDING Frame {
+     Type (i) = 0x00,
+   }
+
+6.2.  Data Frame
+
+   DATA Frame {
+     Type (i) = 0x01,
+     Length (i),
+     Payload (..),
+   }
+
+   Length:  The length of the DATA Frame payload in bytes.
+
+   Payload:  SCONEPRO specific payload such as media bitrate
+      information.
+
+6.3.  Alternative Hosts Frame
+
+   Used to communicate alternative endpoints to which a client can
+   connect to obtain confidentiality of the communication.
+
+   Alternative Hosts Frame {
+     Type (i) = 0x02,
+     Hosts (..),
+   }
+
+   Hosts:  A list of FQDNs (TODO Define Hosts format)
+
+7.  Communication Overview
 
    The goal of SCONEPRO is to provide a way to communicate properties
    between an on-path network device and a QUIC client endpoint, with
@@ -157,12 +252,12 @@ Table of Contents
    Before establishing the SCONEPRO communication, a QUIC client
    establishes its normal end to end connection as per usual from RFC
    9000.  Once this is done, the client opportunistically sends a
-   SCONEPRO QUIC Initial destined to the same endpoint IP address and
-   port.  This Initial can be be parsed by any SCONEPRO-capable network
-   element on the path.  A SCONEPRO-capable elements SHOULD forward
-   these packets in the normal fashion, such that all SCONEPRO-capable
-   devices can see its contents.  All SCONEPRO-capable elements are able
-   to respond in a similar fashion, by creating their own SCONEPRO QUIC
+   SCONEPRO QUIC packet destined to the same endpoint IP address and
+   port.  This packet can be be parsed by any SCONEPRO-capable network
+   element on the path.  A SCONEPRO-capable elements MAY forward these
+   packets in the normal fashion, such that all SCONEPRO-capable devices
+   can see its contents.  All SCONEPRO-capable elements are able to
+   respond in a similar fashion, by creating their own SCONEPRO QUIC
    packets and sending it to the SCONEPRO QUIC client matching the IP/
    port tuple being utilized by the end to end QUIC connection.
 
@@ -171,7 +266,7 @@ Table of Contents
    looking for the pattern of the SCONEPRO packet, combined with trial
    decryption.
 
-10.  On Path Verification
+8.  On Path Verification
 
    SCONEPRO communication MUST only be done with network elements that
    can be verified to be on the same network path as an end to end QUIC
@@ -180,30 +275,15 @@ Table of Contents
    modify and drop packets relevant to an end to end QUIC flow.  As
    SCONEPRO QUIC packets are themselves carried in separate UDP
    datagrams from the end to end QUIC flow, there is not an inherent
-   guarantee that they were generated by a network element.  To combat
-   this without requiring a full TLS handshake, SCONEPRO network element
-   MUST include a sample of a SCONEPRO initial from the QUIC client.
-   This gives the SCONEPRO QUIC client credible reason that the
-   information received was generated by an element on the forwarding
-   path.  This is accomplished through SAMPLE frames.
+   guarantee that they were generated by a network element.
 
-11.  Sample Frame
+   A SCONEPRO network device MUST set the Destination Connection ID
+   Length and Destination Connection ID fields to the values received in
+   the most recently observed SCONEPRO QUIC packet sent by a client.
 
-   A sample frame is a very simple construct meant to contain the first
-   N bytes of the entropy (i.e. the encrypted portion) of a SCONEPRO
-   initial.  A SCONEPRO-capable network element SHOULD send at least 32
-   bytes from one of these packets.
+9.  Extensibility To Provide Confidentiality and Authenticity
 
-   SAMPLE Frame { Type (i) = 0xe3754d5b, Length (i), Sample Data (..), }
-
-   To verify the data in a SAMPLE frame, a SCONEPRO QUIC client must
-   track the first 32 bytes of the SCONEPRO initials it sent to initiate
-   the communication, to compare against the SAMPLE frames received from
-   the network element.
-
-12.  Extensibility To Provide Confidentiality and Authenticity
-
-   The use of QUIC initials explicitly does not allow for
+   The use of keys derived from a publicly known salt does not allow for
    confidentiality or authenticity of the communication.  The only
    manner of authenticity defined in this document is verification of
    the on-path nature of a network element.  It may be desirable for
@@ -222,15 +302,18 @@ Table of Contents
    that conducting a TLS handshake would restrict the communication
    between the QUIC client and exactly one on-path network element.
 
-13.  Security Considerations
+   Alternatively, a network element could advertise a set of hosts to
+   which the client can connect using QUIC version 1.
+
+10.  Security Considerations
 
    TODO Security
 
-14.  IANA Considerations
+11.  IANA Considerations
 
    QUIC version.
 
-15.  Normative References
+12.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
