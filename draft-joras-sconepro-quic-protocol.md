@@ -103,7 +103,7 @@ Fixed Bit:
 
 Forward Bit:
 
-: The next bit (0x20) of byte 0 indicates if a network devices that replies
+: The next bit (0x20) of byte 0 indicates if a network device that replies
   to this packet should consume or forward it. By default it SHOULD be set to 0.
 
 Packet Type:
@@ -201,7 +201,7 @@ Payload:
 ## Alternative Hosts Frame
 
 Used to communicate alternative endpoints. This can be used to
-send a new request of QUIC version but to the network devices
+send a new request of QUIC version but to the network device's
 IP address and port instead of using the same 4-tuple than the
 corresponsing end-to-end QUIC connection. Alternatively, it can also
 be used to setup a full QUIC version 1 connection from the client to the nextwork
