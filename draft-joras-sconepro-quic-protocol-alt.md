@@ -226,7 +226,7 @@ are able to respond in a similar fashion, by creating their own SCONEPRO QUIC
 packets and sending it to the SCONEPRO QUIC client matching the IP/port tuple
 being utilized by the end to end QUIC connection.
 
-The SCONEPRO QUIC client MUST be able to distinguish the end to end QUIC
+The SCONEPRO QUIC client must be able to distinguish the end to end QUIC
 packets and the SCONEPRO QUIC packets. This can be done by looking for the
 pattern of the SCONEPRO packet, combined with trial decryption.
 
