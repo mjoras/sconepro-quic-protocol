@@ -17,7 +17,7 @@ author:
  -
     fullname: Matt Joras
     organization: Meta Platforms, Inc.
-    email: matt.joras@gmail.com 
+    email: matt.joras@gmail.com
  -
     fullname: Marcus Ihlar
     organization: Ericsson
