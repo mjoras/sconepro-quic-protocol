@@ -74,7 +74,7 @@ used to communicate network properties. Furthermore, packets are protected
 using publicly-know keys, similar to the way Initial packets are protected
 in QUIC version 1.
 
-# Long Header Packet Format
+# SCONEPRO QUIC Packets
 
 This version of QUIC only uses long header packets with the following format:
 
@@ -86,9 +86,9 @@ Long Header Packet {
   Reserved Bits (4),
   Version (32),
   Destination Connection ID Length (8),
-  Destination Connection ID (0..160),
+  Destination Connection ID (8..160),
   Source Connection ID Length (8),
-  Source Connection ID (0..160),
+  Source Connection ID (8..160),
   Payload (..),
 }
 ~~~~~
@@ -126,7 +126,8 @@ Destination Connection ID Length:
 Destination Connection ID:
 
 : The Destination Connection ID field follows the Destination Connection ID
-  Length field, which indicates the length of this field.
+  Length field, which indicates the length of this field. A Destination 
+  Connection ID MUST be at least 8 bytes long.
 
 Source Connection ID Length:
 
@@ -137,7 +138,8 @@ Source Connection ID Length:
 Source Connection ID:
 
 : The Source Connection ID field follows the Source Connection ID Length field,
-  which indicates the length of this field.
+  which indicates the length of this field. A Source Connection ID MUST be at
+  least 8 bytes long.
 
 # Packet Protection
 This version of QUIC uses packet protection as defined for Initial packets in
@@ -199,13 +201,14 @@ obtain confidentiality of the communication.
 ~~~
 Alternative Hosts Frame {
   Type (i) = 0x02,
-  Hosts (..),
+  Host (..)..,
 }
 ~~~
 
-Hosts:
+Host:
 
-:  A list of FQDNs (TODO Define Hosts format)
+: A tuple consisting of a host name, port and a QUIC protocol version. (TODO
+define format)
 
 # Communication Overview
 The goal of SCONEPRO is to provide a way to communicate properties between an
@@ -226,6 +229,14 @@ being utilized by the end to end QUIC connection.
 The SCONEPRO QUIC client MUST be able to distinguish the end to end QUIC
 packets and the SCONEPRO QUIC packets. This can be done by looking for the
 pattern of the SCONEPRO packet, combined with trial decryption.
+
+## Use of Connection IDs
+SCONEPRO QUIC packets contain both Source and Destination Connection IDs. A
+client who initiates SCONEPRO communication sets both Source and Destination
+Connection IDs to randomly generated values. A network device that 'responds'
+to a SCONEPRO QUIC packet sets the Destination Connection ID to the value of
+the Source Connection ID of the packet it responds to. The network device sets
+the Source Connection ID to a randomly generated value.
 
 # On Path Verification
 
