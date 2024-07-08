@@ -16,11 +16,11 @@ Abstract
 
    This document describes a new QUIC version.  The proposed wire format
    and a set of procedures can be used to communicate network properties
-   between a content endpoint and an on-path device.  This is achived by
-   sending messages in this new QUIC version format adjacent to already
-   established QUIC version 1 or version 2 connections on the same UDP
-   4-tuple.  The network properties are intended to enable self-
-   adaptation of video media rates by content endpoints.
+   between a content endpoint and an on-path device.  This is achieved
+   by sending messages in this new QUIC version format adjacent to
+   already established QUIC version 1 or version 2 connections on the
+   same UDP 4-tuple.  The network properties are intended to enable
+   self-adaptation of video media rates by content endpoints.
 
 Discussion Venues
 
@@ -214,7 +214,7 @@ Table of Contents
 
    The payload of a packet using this QUIC version consists of a
    sequence of frames.  Frames consist of a type field optionally
-   followed by type specific payload.
+   followed by type-specific payload.
 
 6.1.  Padding Frame
 
@@ -267,20 +267,20 @@ Table of Contents
    establishes a QUIC version 1 or 2 end-to-end connection as per RFC
    9000.  Once this is done, the client opportunistically sends a QUIC
    long header packet destined to the same endpoint IP address and port
-   using this new version.  This packet can be be parsed by any capable
-   network element on the path that support this new QUIC version.  If
-   the Forward Bit is set a capable elements MUST forward these packets
-   and send a Alternative Hosts Frame with its own IP address and port
+   using this new version.  This packet can be parsed by any capable
+   network element on the path that supports this new QUIC version.  If
+   the Forward Bit is set, a capable element MUST forward these packets
+   and send an Alternative Hosts Frame with its own IP address and port
    number to be used for further communication.  This option can be used
-   if more than one capable devices might be on path and needs to see
+   if more than one capable device might be on the path and needs to see
    the contents.  All capable elements are able to respond to the
    initial packet in a similar fashion, by creating their own QUIC
-   packets for this QUIC version and sending it to the QUIC client
+   packets for this QUIC version and sending them to the QUIC client
    matching the IP/port tuple being utilized by the end-to-end QUIC
    connection.
 
    The QUIC client must be able to distinguish the end-to-end QUIC
-   packets version 1 or 2 and the new QUIC version packets.  This can be
+   version 1 or 2 packets and the new QUIC version packets.  This can be
    done by looking for the pattern of packets, combined with trial
    decryption.
 

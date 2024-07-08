@@ -8,13 +8,12 @@
 <meta content="Matt Joras" name="author">
 <meta content="Marcus Ihlar" name="author">
 <meta content="
-       This document describes a new QUIC version. The proposed wire format and a set of procedures can be used to
-communicate network properties between a content endpoint and an on-path
-device. This is achived by sending messages in this new QUIC version format
-adjacent to already established QUIC version 1 or version 2
-connections on the same UDP 4-tuple.
-The network properties are intended to enable self-adaptation of video
-media rates by content endpoints. 
+       This document describes a new QUIC version. The proposed wire format and a set
+of procedures can be used to communicate network properties between a content
+endpoint and an on-path device. This is achieved by sending messages in this new
+QUIC version format adjacent to already established QUIC version 1 or version 2
+connections on the same UDP 4-tuple. The network properties are intended to
+enable self-adaptation of video media rates by content endpoints. 
     " name="description">
 <meta content="xml2rfc 3.22.0" name="generator">
 <meta content="next generation" name="keyword">
@@ -1072,13 +1071,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">A new QUIC version for network property communication</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document describes a new QUIC version. The proposed wire format and a set of procedures can be used to
-communicate network properties between a content endpoint and an on-path
-device. This is achived by sending messages in this new QUIC version format
-adjacent to already established QUIC version 1 or version 2
-connections on the same UDP 4-tuple.
-The network properties are intended to enable self-adaptation of video
-media rates by content endpoints.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document describes a new QUIC version. The proposed wire format and a set
+of procedures can be used to communicate network properties between a content
+endpoint and an on-path device. This is achieved by sending messages in this new
+QUIC version format adjacent to already established QUIC version 1 or version 2
+connections on the same UDP 4-tuple. The network properties are intended to
+enable self-adaptation of video media rates by content endpoints.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-discussion-venues">
@@ -1214,20 +1212,19 @@ media rates by content endpoints.<a href="#section-abstract-1" class="pilcrow">�
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">The basic idea of the QUIC version described in this document is to create an independent message flow between a client
-endpoint and devices in the network, in parallel to an end-to-end QUIC
-connection [RFC 9000], to exchange network properties. This independent flow
-uses a separate version of QUIC. This document will not describe what
-information is exchanged for these properties, but rather the overall way in
-which the communication functions.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">The new version of QUIC described in this document
-adheres to the version-independent properties of QUIC specified in RFC 8999.
-This version of QUIC uses long headers for
-all its communication.
-The version of QUIC defined in this document protects packets using publicly
-known keys, which means that confidentiality and integrity of protocol payload
-cannot be guaranteed. The document describes how a connection can be upgraded
-to a QUIC version that supports full TLS protection.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-1">The basic idea of the QUIC version described in this document is to create an
+independent message flow between a client endpoint and devices in the network,
+in parallel to an end-to-end QUIC connection [RFC 9000], to exchange network
+properties. This independent flow uses a separate version of QUIC. This document
+will not describe what information is exchanged for these properties, but rather
+the overall way in which the communication functions.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">The new version of QUIC described in this document adheres to the
+version-independent properties of QUIC specified in RFC 8999. This version of
+QUIC uses long headers for all its communication. The version of QUIC defined in
+this document protects packets using publicly known keys, which means that
+confidentiality and integrity of protocol payload cannot be guaranteed. The
+document describes how a connection can be upgraded to a QUIC version that
+supports full TLS protection.<a href="#section-1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1383,8 +1380,9 @@ guidance for new versions in Section 9.6 of that document.<a href="#section-5.2-
       <h2 id="name-frames">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-frames" class="section-name selfRef">Frames</a>
       </h2>
-<p id="section-6-1">The payload of a packet using this QUIC version consists of a sequence of frames. Frames
-consist of a type field optionally followed by type specific payload.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">The payload of a packet using this QUIC version consists of a sequence of
+frames. Frames consist of a type field optionally followed by type-specific
+payload.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <div id="padding-frame">
 <section id="section-6.1">
         <h3 id="name-padding-frame">
@@ -1465,24 +1463,24 @@ define format)<a href="#section-6.3-3.2.1" class="pilcrow">¶</a></p>
       <h2 id="name-communication-overview">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-communication-overview" class="section-name selfRef">Communication Overview</a>
       </h2>
-<p id="section-7-1">The goal of this QUIC version is to provide a way to communicate properties between an
-on-path network device and a QUIC client endpoint, with the QUIC client
-responsible for the initiation of that communication.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">The goal of this QUIC version is to provide a way to communicate properties
+between an on-path network device and a QUIC client endpoint, with the QUIC
+client responsible for the initiation of that communication.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">Before establishing the communication, a QUIC client usually establishes a
-QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done, the
-client opportunistically sends a QUIC long header packet destined to the same
-endpoint IP address and port using this new version. This packet can be be parsed by any
-capable network element on the path that support this new QUIC version.
-If the Forward Bit is set a capable elements
-<span class="bcp14">MUST</span> forward these packets and send a Alternative Hosts Frame with its own IP
-address and port number to be used for further communication. This option
-can be used if more than one capable devices might be on path and
-needs to see the contents. All capable elements
-are able to respond to the initial packet in a similar fashion, by creating their own QUIC
-packets for this QUIC version and sending it to the QUIC client matching the IP/port tuple
-being utilized by the end-to-end QUIC connection.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">The QUIC client must be able to distinguish the end-to-end QUIC
-packets version 1 or 2 and the new QUIC version packets. This can be done by looking for the
+QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done,
+the client opportunistically sends a QUIC long header packet destined to the
+same endpoint IP address and port using this new version. This packet can be
+parsed by any capable network element on the path that supports this new QUIC
+version. If the Forward Bit is set, a capable element <span class="bcp14">MUST</span> forward these packets
+and send an Alternative Hosts Frame with its own IP address and port number to
+be used for further communication. This option can be used if more than one
+capable device might be on the path and needs to see the contents. All capable
+elements are able to respond to the initial packet in a similar fashion, by
+creating their own QUIC packets for this QUIC version and sending them to the
+QUIC client matching the IP/port tuple being utilized by the end-to-end QUIC
+connection.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">The QUIC client must be able to distinguish the end-to-end QUIC version 1 or 2
+packets and the new QUIC version packets. This can be done by looking for the
 pattern of packets, combined with trial decryption.<a href="#section-7-3" class="pilcrow">¶</a></p>
 <div id="use-of-connection-ids">
 <section id="section-7.1">
