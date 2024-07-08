@@ -1289,7 +1289,7 @@ set to 1 for long headers.<a href="#section-4-3.2.1" class="pilcrow">¶</a></p>
         <dd class="break"></dd>
 <dt id="section-4-3.5">Forward Bit:</dt>
         <dd style="margin-left: 1.5em" id="section-4-3.6">
-          <p id="section-4-3.6.1">The next bit (0x20) of byte 0 indicates if a network devices that replies
+          <p id="section-4-3.6.1">The next bit (0x20) of byte 0 indicates if a network device that replies
 to this packet should consume or forward it. By default it <span class="bcp14">SHOULD</span> be set to 0.<a href="#section-4-3.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
@@ -1433,7 +1433,7 @@ DATA Frame {
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-alternative-hosts-frame" class="section-name selfRef">Alternative Hosts Frame</a>
         </h3>
 <p id="section-6.3-1">Used to communicate alternative endpoints. This can be used to
-send a new request of QUIC version but to the network devices
+send a new request of QUIC version but to the network device's
 IP address and port instead of using the same 4-tuple than the
 corresponsing end-to-end QUIC connection. Alternatively, it can also
 be used to setup a full QUIC version 1 connection from the client to the nextwork
