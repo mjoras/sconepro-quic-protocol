@@ -1,6 +1,6 @@
 ---
-title: "SCONEPRO QUIC Protocol"
-abbrev: "SCONEPRO QUIC Protocol"
+title: "A new QUIC version for network Exposure"
+abbrev: "QUIC for network exposure"
 category: info
 
 docname: draft-joras-sconepro-quic-protocol-alt-latest
@@ -29,30 +29,30 @@ informative:
 
 --- abstract
 
-This document describes a wire format and a set of procedures used to
+This document describes a new QUIC version. The proposed wire format and a set of procedures can be used to
 communicate network properties between a content endpoint and an on-path
-device. The network properties are intended to enable self-adaptation of video
+device. This is achived by sending messages in this new QUIC version format
+adjacent to already established QUIC version 1 or version 2
+connections on the same UDP 4-tuple.
+The network properties are intended to enable self-adaptation of video
 media rates by content endpoints.
-
-The wire format in this document is defined as a new version of QUIC that
-adheres to the version-independent properties of QUIC specified in RFC 8999.
-Messages are sent adjacent to already established QUIC version 1 or version 2
-connections on the same UDP 4-tuple. This version of QUIC uses long headers for
-all its communication, and packet protection is achieved using publicly known
-keys.
 
 
 --- middle
 
 # Introduction
 
-The basic idea of SCONEPRO is to use an independent flow between a client
+The basic idea of the QUIC version described in this document is to create an independent message flow between a client
 endpoint and devices in the network, in parallel to an end-to-end QUIC
 connection [RFC 9000], to exchange network properties. This independent flow
 uses a separate version of QUIC. This document will not describe what
 information is exchanged for these properties, but rather the overall way in
 which the communication functions.
 
+The new version of QUIC described in this document
+adheres to the version-independent properties of QUIC specified in RFC 8999.
+This version of QUIC uses long headers for
+all its communication.
 The version of QUIC defined in this document protects packets using publicly
 known keys, which means that confidentiality and integrity of protocol payload
 cannot be guaranteed. The document describes how a connection can be upgraded
@@ -74,7 +74,7 @@ used to communicate network properties. Furthermore, packets are protected
 using publicly-know keys, similar to the way Initial packets are protected
 in QUIC version 1.
 
-# SCONEPRO QUIC Packets
+# QUIC Long Header Packet Format
 
 This version of QUIC only uses long header packets with the following format:
 
@@ -167,7 +167,7 @@ from "quic iv" to "quicscone iv", from "quic hp" to "quicscone hp", to meet the
 guidance for new versions in Section 9.6 of that document.
 
 # Frames
-The payload of a SCONEPRO QUIC packet consists of a sequence of frames. Frames
+The payload of a packet using this QUIC version consists of a sequence of frames. Frames
 consist of a type field optionally followed by type specific payload.
 
 ## Padding Frame
@@ -217,27 +217,27 @@ Host:
 define format)
 
 # Communication Overview
-The goal of SCONEPRO is to provide a way to communicate properties between an
+The goal of this QUIC version is to provide a way to communicate properties between an
 on-path network device and a QUIC client endpoint, with the QUIC client
 responsible for the initiation of that communication.
 
-Before establishing the SCONEPRO communication, a QUIC client establishes its
-normal end to end connection as per usual from RFC 9000. Once this is done, the
-client opportunistically sends a SCONEPRO QUIC packet destined to the same
-endpoint IP address and port. This packet can be be parsed by any
-SCONEPRO-capable network element on the path. 
-If the Forward Bit is set a SCONEPRO-capable elements
+Before establishing the communication, a QUIC client usually establishes a
+QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done, the
+client opportunistically sends a QUIC long header packet destined to the same
+endpoint IP address and port using this new version. This packet can be be parsed by any
+capable network element on the path that support this new QUIC version. 
+If the Forward Bit is set a capable elements
 MUST forward these packets and send a Alternative Hosts Frame with its own IP
-address and port number to be used for further communication. This can option
-can be used if more than one SCONEPRO-capable devices might be on path and
-needs to see the contents. All SCONEPRO-capable elements
-are able to respond to the initial packet in a similar fashion, by creating their own SCONEPRO QUIC
-packets and sending it to the SCONEPRO QUIC client matching the IP/port tuple
-being utilized by the end to end QUIC connection.
+address and port number to be used for further communication. This option
+can be used if more than one capable devices might be on path and
+needs to see the contents. All capable elements
+are able to respond to the initial packet in a similar fashion, by creating their own QUIC
+packets for this QUIC version and sending it to the QUIC client matching the IP/port tuple
+being utilized by the end-to-end QUIC connection.
 
-The SCONEPRO QUIC client MUST be able to distinguish the end to end QUIC
-packets and the SCONEPRO QUIC packets. This can be done by looking for the
-pattern of the SCONEPRO packet, combined with trial decryption.
+The QUIC client MUST be able to distinguish the end-to-end QUIC
+packets version 1 or 2 and the new QUIC version packets. This can be done by looking for the
+pattern of packets, combined with trial decryption.
 
 ## Use of Connection IDs
 SCONEPRO QUIC packets contain both Source and Destination Connection IDs. A
@@ -249,29 +249,29 @@ the Source Connection ID to a randomly generated value.
 
 # On Path Verification
 
-SCONEPRO communication MUST only be done with network elements that can be
+Communication using this new QUIC version MUST only be done with network elements that can be
 verified to be on the same network path as an end to end QUIC flow. This is
-because SCONEPRO communication is only meant to be done with network elements
+because this communication is only meant to be done with network elements
 that have the ability to, for example, modify and drop packets relevant to an
-end to end QUIC flow. As SCONEPRO QUIC packets are themselves carried in
+end-to-end QUIC flow. As QUIC packets for this new version are themselves carried in
 separate UDP datagrams from the end to end QUIC flow, there is not an inherent
 guarantee that they were generated by a network element.
 
-A SCONEPRO network device MUST set the Destination Connection ID Length and
+A capable network device MUST set the Destination Connection ID Length and
 Destination Connection ID fields to the values received in the most recently
-observed SCONEPRO QUIC packet sent by a client.
+observed new version QUIC packet sent by a client.
 
 
 # Extensibility To Provide Confidentiality and Authenticity
 The use of keys derived from a publicly known salt does not allow for
 confidentiality or authenticity of the communication. The only manner of
 authenticity defined in this document is verification of the on-path nature of
-a network element. It may be desirable for SCONEPRO to be extended to allow for
+a network element. It may be desirable for this version of QUIC to be extended to allow for
 confidentiality and authenticity.
 
 Confidentiality with this protocol could be achieved by further leveraging the
-provisions of QUIC version 1 to do a TLS handshake between the SCONEPRO QUIC
-client and a SCONEPRO-capable network element. Authenticity could similarly
+provisions of QUIC version 1 to do a TLS handshake between the QUIC
+client and a capable network element. Authenticity could similarly
 leverage the provisions of TLS. However, this comes with significant
 complications. TLS achieves authenticity by using Public Key Infrastructure
 (PKI), where each participant can choose to trust the certificate offered by
@@ -290,7 +290,7 @@ TODO Security
 
 # IANA Considerations
 
-QUIC version.
+TBD - QUIC version.
 
 
 --- back
