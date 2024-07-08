@@ -1,6 +1,6 @@
 ---
-title: "SCONEPRO QUIC Protocol"
-abbrev: "SCONEPRO QUIC Protocol"
+title: "A new QUIC version for network Exposure"
+abbrev: "QUIC for network exposure"
 category: info
 
 docname: draft-joras-sconepro-quic-protocol-alt-latest
@@ -29,30 +29,30 @@ informative:
 
 --- abstract
 
-This document describes a wire format and a set of procedures used to
+This document describes a new QUIC version. The proposed wire format and a set of procedures can be used to
 communicate network properties between a content endpoint and an on-path
-device. The network properties are intended to enable self-adaptation of video
+device. This is achived by sending messages in this new QUIC version format
+adjacent to already established QUIC version 1 or version 2
+connections on the same UDP 4-tuple.
+The network properties are intended to enable self-adaptation of video
 media rates by content endpoints.
-
-The wire format in this document is defined as a new version of QUIC that
-adheres to the version-independent properties of QUIC specified in RFC 8999.
-Messages are sent adjacent to already established QUIC version 1 or version 2
-connections on the same UDP 4-tuple. This version of QUIC uses long headers for
-all its communication, and packet protection is achieved using publicly known
-keys.
 
 
 --- middle
 
 # Introduction
 
-The basic idea of SCONEPRO is to use an independent flow between a client
+The basic idea of the QUIC version described in this document is to create an independent message flow between a client
 endpoint and devices in the network, in parallel to an end-to-end QUIC
 connection [RFC 9000], to exchange network properties. This independent flow
 uses a separate version of QUIC. This document will not describe what
 information is exchanged for these properties, but rather the overall way in
 which the communication functions.
 
+The new version of QUIC described in this document
+adheres to the version-independent properties of QUIC specified in RFC 8999.
+This version of QUIC uses long headers for
+all its communication.
 The version of QUIC defined in this document protects packets using publicly
 known keys, which means that confidentiality and integrity of protocol payload
 cannot be guaranteed. The document describes how a connection can be upgraded
@@ -74,7 +74,7 @@ used to communicate network properties. Furthermore, packets are protected
 using publicly-know keys, similar to the way Initial packets are protected
 in QUIC version 1.
 
-# SCONEPRO QUIC Packets
+# QUIC Long Header Packet Format
 
 This version of QUIC only uses long header packets with the following format:
 
@@ -161,7 +161,7 @@ from "quic iv" to "quicscone iv", from "quic hp" to "quicscone hp", to meet the
 guidance for new versions in Section 9.6 of that document.
 
 # Frames
-The payload of a SCONEPRO QUIC packet consists of a sequence of frames. Frames
+The payload of a packet using this QUIC version consists of a sequence of frames. Frames
 consist of a type field optionally followed by type specific payload.
 
 ## Padding Frame
