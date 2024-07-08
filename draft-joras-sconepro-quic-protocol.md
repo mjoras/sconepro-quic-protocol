@@ -29,34 +29,32 @@ informative:
 
 --- abstract
 
-This document describes a new QUIC version. The proposed wire format and a set of procedures can be used to
-communicate network properties between a content endpoint and an on-path
-device. This is achived by sending messages in this new QUIC version format
-adjacent to already established QUIC version 1 or version 2
-connections on the same UDP 4-tuple.
-The network properties are intended to enable self-adaptation of video
-media rates by content endpoints.
+This document describes a new QUIC version. The proposed wire format and a set
+of procedures can be used to communicate network properties between a content
+endpoint and an on-path device. This is achieved by sending messages in this new
+QUIC version format adjacent to already established QUIC version 1 or version 2
+connections on the same UDP 4-tuple. The network properties are intended to
+enable self-adaptation of video media rates by content endpoints.
 
 
 --- middle
 
 # Introduction
 
-The basic idea of the QUIC version described in this document is to create an independent message flow between a client
-endpoint and devices in the network, in parallel to an end-to-end QUIC
-connection [RFC 9000], to exchange network properties. This independent flow
-uses a separate version of QUIC. This document will not describe what
-information is exchanged for these properties, but rather the overall way in
-which the communication functions.
+The basic idea of the QUIC version described in this document is to create an
+independent message flow between a client endpoint and devices in the network,
+in parallel to an end-to-end QUIC connection [RFC 9000], to exchange network
+properties. This independent flow uses a separate version of QUIC. This document
+will not describe what information is exchanged for these properties, but rather
+the overall way in which the communication functions.
 
-The new version of QUIC described in this document
-adheres to the version-independent properties of QUIC specified in RFC 8999.
-This version of QUIC uses long headers for
-all its communication.
-The version of QUIC defined in this document protects packets using publicly
-known keys, which means that confidentiality and integrity of protocol payload
-cannot be guaranteed. The document describes how a connection can be upgraded
-to a QUIC version that supports full TLS protection.
+The new version of QUIC described in this document adheres to the
+version-independent properties of QUIC specified in RFC 8999. This version of
+QUIC uses long headers for all its communication. The version of QUIC defined in
+this document protects packets using publicly known keys, which means that
+confidentiality and integrity of protocol payload cannot be guaranteed. The
+document describes how a connection can be upgraded to a QUIC version that
+supports full TLS protection.
 
 
 # Conventions and Definitions
@@ -167,8 +165,9 @@ from "quic iv" to "quicscone iv", from "quic hp" to "quicscone hp", to meet the
 guidance for new versions in Section 9.6 of that document.
 
 # Frames
-The payload of a packet using this QUIC version consists of a sequence of frames. Frames
-consist of a type field optionally followed by type specific payload.
+The payload of a packet using this QUIC version consists of a sequence of
+frames. Frames consist of a type field optionally followed by type-specific
+payload.
 
 ## Padding Frame
 
@@ -221,26 +220,26 @@ Host:
 define format)
 
 # Communication Overview
-The goal of this QUIC version is to provide a way to communicate properties between an
-on-path network device and a QUIC client endpoint, with the QUIC client
-responsible for the initiation of that communication.
+The goal of this QUIC version is to provide a way to communicate properties
+between an on-path network device and a QUIC client endpoint, with the QUIC
+client responsible for the initiation of that communication.
 
 Before establishing the communication, a QUIC client usually establishes a
-QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done, the
-client opportunistically sends a QUIC long header packet destined to the same
-endpoint IP address and port using this new version. This packet can be be parsed by any
-capable network element on the path that support this new QUIC version.
-If the Forward Bit is set a capable elements
-MUST forward these packets and send a Alternative Hosts Frame with its own IP
-address and port number to be used for further communication. This option
-can be used if more than one capable devices might be on path and
-needs to see the contents. All capable elements
-are able to respond to the initial packet in a similar fashion, by creating their own QUIC
-packets for this QUIC version and sending it to the QUIC client matching the IP/port tuple
-being utilized by the end-to-end QUIC connection.
+QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done,
+the client opportunistically sends a QUIC long header packet destined to the
+same endpoint IP address and port using this new version. This packet can be
+parsed by any capable network element on the path that supports this new QUIC
+version. If the Forward Bit is set, a capable element MUST forward these packets
+and send an Alternative Hosts Frame with its own IP address and port number to
+be used for further communication. This option can be used if more than one
+capable device might be on the path and needs to see the contents. All capable
+elements are able to respond to the initial packet in a similar fashion, by
+creating their own QUIC packets for this QUIC version and sending them to the
+QUIC client matching the IP/port tuple being utilized by the end-to-end QUIC
+connection.
 
-The QUIC client must be able to distinguish the end-to-end QUIC
-packets version 1 or 2 and the new QUIC version packets. This can be done by looking for the
+The QUIC client must be able to distinguish the end-to-end QUIC version 1 or 2
+packets and the new QUIC version packets. This can be done by looking for the
 pattern of packets, combined with trial decryption.
 
 ## Use of Connection IDs
