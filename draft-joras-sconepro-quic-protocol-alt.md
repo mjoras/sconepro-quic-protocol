@@ -82,8 +82,9 @@ This version of QUIC only uses long header packets with the following format:
 Long Header Packet {
   Header Form (1) = 1,
   Fixed Bit (1) = 0,
+  Forward Bit (1) = 0,
   Packet Type (2) = 0,
-  Reserved Bits (4),
+  Reserved Bits (3),
   Version (32),
   Destination Connection ID Length (8),
   Destination Connection ID (8..160),
@@ -101,6 +102,11 @@ set to 1 for long headers.
 Fixed Bit:
 
 : The next bit (0x40) of byte 0 is set to 1.
+
+Forward Bit:
+
+: The next bit (0x20) of byte 0 indicates if a network devices that replies
+  to this packet should consume or forward it. By default it SHOULD be set to 0.
 
 Packet Type:
 
@@ -223,11 +229,14 @@ Before establishing the communication, a QUIC client usually establishes a
 QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done, the
 client opportunistically sends a QUIC long header packet destined to the same
 endpoint IP address and port using this new version. This packet can be be parsed by any
-capable network element on the path that support this new QUIC version. These elements
-MAY forward these packets in the normal fashion, such that all
-capable devices on path can see its contents. All capable elements
-are able to respond in a similar fashion, by creating their own long header
-packets  for this QUIC version and sending it to the QUIC client matching the IP/port tuple
+capable network element on the path that support this new QUIC version.
+If the Forward Bit is set a capable elements
+MUST forward these packets and send a Alternative Hosts Frame with its own IP
+address and port number to be used for further communication. This option
+can be used if more than one capable devices might be on path and
+needs to see the contents. All capable elements
+are able to respond to the initial packet in a similar fashion, by creating their own QUIC
+packets for this QUIC version and sending it to the QUIC client matching the IP/port tuple
 being utilized by the end-to-end QUIC connection.
 
 The QUIC client must be able to distinguish the end-to-end QUIC
