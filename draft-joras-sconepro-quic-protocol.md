@@ -3,7 +3,7 @@ title: "A new QUIC version for network Exposure"
 abbrev: "QUIC for network exposure"
 category: info
 
-docname: draft-joras-sconepro-quic-protocol-alt-latest
+docname: draft-joras-sconepro-quic-protocol-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
