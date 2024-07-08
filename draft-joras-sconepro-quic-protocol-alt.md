@@ -198,7 +198,7 @@ Payload:
 Used to communicate alternative endpoints. This can be used to
 send a new request of QUIC version but to the network devices
 IP address and port instead of using the same 4-tuple than the
-corresponsing end-to-end QUIC connection. Alternative it can also
+corresponsing end-to-end QUIC connection. Alternatively, it can also
 be used to setup a full QUIC version 1 connection from the client to the nextwork
 device to obtain confidentiality and authentication of the communication. 
 
