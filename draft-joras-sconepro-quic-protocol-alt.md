@@ -225,7 +225,7 @@ Before establishing the communication, a QUIC client usually establishes a
 QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done, the
 client opportunistically sends a QUIC long header packet destined to the same
 endpoint IP address and port using this new version. This packet can be be parsed by any
-capable network element on the path that support this new QUIC version. 
+capable network element on the path that support this new QUIC version.
 If the Forward Bit is set a capable elements
 MUST forward these packets and send a Alternative Hosts Frame with its own IP
 address and port number to be used for further communication. This option
