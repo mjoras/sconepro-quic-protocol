@@ -9,7 +9,7 @@ Expires: 9 January 2025                                         Ericsson
                                                              8 July 2024
 
 
-                A new QUIC version for network Exposure
+         A new QUIC version for network property communication
                draft-joras-sconepro-quic-protocol-latest
 
 Abstract
