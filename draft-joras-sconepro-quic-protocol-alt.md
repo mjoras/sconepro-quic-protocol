@@ -82,8 +82,9 @@ This version of QUIC only uses long header packets with the following format:
 Long Header Packet {
   Header Form (1) = 1,
   Fixed Bit (1) = 0,
+  Forward Bit (1) = 0,
   Packet Type (2) = 0,
-  Reserved Bits (4),
+  Reserved Bits (3),
   Version (32),
   Destination Connection ID Length (8),
   Destination Connection ID (8..160),
@@ -101,6 +102,11 @@ set to 1 for long headers.
 Fixed Bit:
 
 : The next bit (0x40) of byte 0 is set to 1.
+
+Forward Bit:
+
+: The next bit (0x20) of byte 0 indicates if a network devices that replies
+  to this packet should consume or forward it. By default it SHOULD be set to 0.
 
 Packet Type:
 
@@ -219,10 +225,13 @@ Before establishing the SCONEPRO communication, a QUIC client establishes its
 normal end to end connection as per usual from RFC 9000. Once this is done, the
 client opportunistically sends a SCONEPRO QUIC packet destined to the same
 endpoint IP address and port. This packet can be be parsed by any
-SCONEPRO-capable network element on the path. A SCONEPRO-capable elements
-MAY forward these packets in the normal fashion, such that all
-SCONEPRO-capable devices can see its contents. All SCONEPRO-capable elements
-are able to respond in a similar fashion, by creating their own SCONEPRO QUIC
+SCONEPRO-capable network element on the path. 
+If the Forward Bit is set a SCONEPRO-capable elements
+MUST forward these packets and send a Alternative Hosts Frame with its own IP
+address and port number to be used for further communication. This can option
+can be used if more than one SCONEPRO-capable devices might be on path and
+needs to see the contents. All SCONEPRO-capable elements
+are able to respond to the initial packet in a similar fashion, by creating their own SCONEPRO QUIC
 packets and sending it to the SCONEPRO QUIC client matching the IP/port tuple
 being utilized by the end to end QUIC connection.
 
