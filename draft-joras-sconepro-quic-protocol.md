@@ -1,6 +1,6 @@
 ---
-title: "A new QUIC version for network Exposure"
-abbrev: "QUIC for network exposure"
+title: "A new QUIC version for network property communication"
+abbrev: "QUIC for network property communication"
 category: info
 
 docname: draft-joras-sconepro-quic-protocol-latest
