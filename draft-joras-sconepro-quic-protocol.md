@@ -152,9 +152,9 @@ This version of QUIC uses packet protection as defined for Initial packets in
 section 5 of [QUIC-TLS].
 
 This version of QUIC does not use packet numbers, therefore nonces are created
-by combining the intial destination connection ID with the source connection ID
-of the packet. Each SCONEPRO QUIC packet mus use a randomly generated source
-connection ID with a high probability of being unique.
+by combining the initial Destination Connection ID with the Source Connection
+ID of the packet. A sender MUST generate a Source Connection ID with a high
+probability of being unique for each packet.
 
 ## Public Salt
 A publicly known salt is used to derive the secrets, specifically
