@@ -230,7 +230,7 @@ are able to respond in a similar fashion, by creating their own long header
 packets  for this QUIC version and sending it to the QUIC client matching the IP/port tuple
 being utilized by the end-to-end QUIC connection.
 
-The QUIC client MUST be able to distinguish the end-to-end QUIC
+The QUIC client must be able to distinguish the end-to-end QUIC
 packets version 1 or 2 and the new QUIC version packets. This can be done by looking for the
 pattern of packets, combined with trial decryption.
 
