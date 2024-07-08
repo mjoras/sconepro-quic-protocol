@@ -126,7 +126,7 @@ Destination Connection ID Length:
 Destination Connection ID:
 
 : The Destination Connection ID field follows the Destination Connection ID
-  Length field, which indicates the length of this field. A Destination 
+  Length field, which indicates the length of this field. A Destination
   Connection ID MUST be at least 8 bytes long.
 
 Source Connection ID Length:
