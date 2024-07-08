@@ -222,7 +222,7 @@ endpoint IP address and port using this new version. This packet can be be parse
 capable network element on the path that support this new QUIC version. These elements
 MAY forward these packets in the normal fashion, such that all
 capable devices on path can see its contents. All capable elements
-are able to respond in a similar fashion, by creating their own long header 
+are able to respond in a similar fashion, by creating their own long header
 packets  for this QUIC version and sending it to the QUIC client matching the IP/port tuple
 being utilized by the end-to-end QUIC connection.
 
