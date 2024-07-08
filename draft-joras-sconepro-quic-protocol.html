@@ -1353,9 +1353,9 @@ least 8 bytes long.<a href="#section-4-3.20.1" class="pilcrow">¶</a></p>
 <p id="section-5-1">This version of QUIC uses packet protection as defined for Initial packets in
 section 5 of [QUIC-TLS].<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">This version of QUIC does not use packet numbers, therefore nonces are created
-by combining the intial destination connection ID with the source connection ID
-of the packet. Each SCONEPRO QUIC packet mus use a randomly generated source
-connection ID with a high probability of being unique.<a href="#section-5-2" class="pilcrow">¶</a></p>
+by combining the initial Destination Connection ID with the Source Connection
+ID of the packet. A sender <span class="bcp14">MUST</span> generate a Source Connection ID with a high
+probability of being unique for each packet.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <div id="public-salt">
 <section id="section-5.1">
         <h3 id="name-public-salt">
