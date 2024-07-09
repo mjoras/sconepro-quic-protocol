@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-07T00:50:41.973208+00:00",
+  "timestamp": "2024-07-09T00:45:29.790323+00:00",
   "repo": "mjoras/sconepro-quic-protocol",
   "labels": [
     {
@@ -50,5 +50,321 @@
     }
   ],
   "issues": [],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOMNi4I850sqUs",
+      "title": "Don't use the name SCONEPRO",
+      "url": "https://github.com/mjoras/sconepro-quic-protocol/pull/1",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I think it's better to just talk about a new QUIC version and to not make people believe this is the one and only proposal for a new protocol.",
+      "createdAt": "2024-07-08T13:40:43Z",
+      "updatedAt": "2024-07-08T15:38:25Z",
+      "baseRepository": "mjoras/sconepro-quic-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "9989b52ce0d6dec1b6578a7ff877cb153351f421",
+      "headRepository": "mirjak/sconepro-quic-protocol",
+      "headRefName": "patch-1",
+      "headRefOid": "1d06bda4746821892fa9ebbc97ac919861ca2692",
+      "closedAt": "2024-07-08T15:38:25Z",
+      "mergedAt": "2024-07-08T15:38:25Z",
+      "mergedBy": "mjoras",
+      "mergeCommit": {
+        "oid": "786f7439383895217a601eef5de8ea772a209378"
+      },
+      "comments": [
+        {
+          "author": "mjoras",
+          "authorAssociation": "OWNER",
+          "body": "@mirjak are you okay with the draft name having SCONEPRO? Fwiw I also think if any of this is taken up as a WG the entire name is up for re litigation ",
+          "createdAt": "2024-07-08T14:48:30Z",
+          "updatedAt": "2024-07-08T14:48:30Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think you need to have sconepro in the draft name to make sure the datatracker correctly show it with the BoF. I agree this might anyway chance with a wg but for now we need to use the BoF name. We can easily rename after the BoF if people want to continue to work on this draft.",
+          "createdAt": "2024-07-08T14:54:38Z",
+          "updatedAt": "2024-07-08T14:54:38Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "As a side note, I extended the PR now to also cover the second part of the doc (sorry stopped reading to early).",
+          "createdAt": "2024-07-08T15:02:59Z",
+          "updatedAt": "2024-07-08T15:02:59Z"
+        },
+        {
+          "author": "mjoras",
+          "authorAssociation": "OWNER",
+          "body": "@mirjak can you fix the lint the check is mad about (line wrapping I think?) then I can merge.",
+          "createdAt": "2024-07-08T15:14:27Z",
+          "updatedAt": "2024-07-08T15:14:27Z"
+        },
+        {
+          "author": "mirjak",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Done but note this is a PR on there alternative md Marcus provided on Friday",
+          "createdAt": "2024-07-08T15:37:24Z",
+          "updatedAt": "2024-07-08T15:37:24Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMNi4I86A9v1r",
+          "commit": {
+            "abbreviatedOid": "bb917de"
+          },
+          "author": "mirjak",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-08T15:23:00Z",
+          "updatedAt": "2024-07-08T15:23:00Z",
+          "comments": [
+            {
+              "originalPosition": 93,
+              "body": "```suggestion\r\nare able to respond in a similar fashion, by creating their own long header\r\n```",
+              "createdAt": "2024-07-08T15:23:00Z",
+              "updatedAt": "2024-07-08T15:23:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOMNi4I850tbTS",
+      "title": "Two uses for alternative host frame",
+      "url": "https://github.com/mjoras/sconepro-quic-protocol/pull/2",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Proposal to use this Frame for two things: for setting up a quic v1  connection or simply a new version quic connection to the IP of the network device.",
+      "createdAt": "2024-07-08T15:08:58Z",
+      "updatedAt": "2024-07-08T17:27:07Z",
+      "baseRepository": "mjoras/sconepro-quic-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "9989b52ce0d6dec1b6578a7ff877cb153351f421",
+      "headRepository": "mirjak/sconepro-quic-protocol",
+      "headRefName": "patch-2",
+      "headRefOid": "095dd138b24669480acb487392bf3a279fb19c37",
+      "closedAt": "2024-07-08T17:27:07Z",
+      "mergedAt": "2024-07-08T17:27:07Z",
+      "mergedBy": "mjoras",
+      "mergeCommit": {
+        "oid": "795ac740717643c7c43068fc7e6d69f88c17a397"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMNi4I86A97hz",
+          "commit": {
+            "abbreviatedOid": "99a0a2b"
+          },
+          "author": "mjoras",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-08T15:40:44Z",
+          "updatedAt": "2024-07-08T15:40:50Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Typo, \"Alternatively\"",
+              "createdAt": "2024-07-08T15:40:44Z",
+              "updatedAt": "2024-07-08T15:40:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMNi4I86A-LLV",
+          "commit": {
+            "abbreviatedOid": "99a0a2b"
+          },
+          "author": "mirjak",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-08T16:05:16Z",
+          "updatedAt": "2024-07-08T16:05:17Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "```suggestion\r\ncorresponsing end-to-end QUIC connection. Alternatively, it can also\r\n```",
+              "createdAt": "2024-07-08T16:05:16Z",
+              "updatedAt": "2024-07-08T16:05:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOMNi4I86A-Nab",
+          "commit": {
+            "abbreviatedOid": "5ce1464"
+          },
+          "author": "mirjak",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-08T16:09:53Z",
+          "updatedAt": "2024-07-08T16:09:53Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "```suggestion\r\ndevice to obtain confidentiality and authentication of the communication.\r\n```",
+              "createdAt": "2024-07-08T16:09:53Z",
+              "updatedAt": "2024-07-08T16:09:53Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOMNi4I850tcPI",
+      "title": "not a protocol requirement but a fact",
+      "url": "https://github.com/mjoras/sconepro-quic-protocol/pull/3",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "so don't use normative MUST here.",
+      "createdAt": "2024-07-08T15:10:47Z",
+      "updatedAt": "2024-07-08T17:27:22Z",
+      "baseRepository": "mjoras/sconepro-quic-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "786f7439383895217a601eef5de8ea772a209378",
+      "headRepository": "mirjak/sconepro-quic-protocol",
+      "headRefName": "patch-3",
+      "headRefOid": "f0b8edc99233c9b884e316195dbf9793c716761a",
+      "closedAt": "2024-07-08T17:27:22Z",
+      "mergedAt": "2024-07-08T17:27:22Z",
+      "mergedBy": "mjoras",
+      "mergeCommit": {
+        "oid": "2cb6d50155940428bae443532ed2ac60ddaf9e3f"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOMNi4I850th0u",
+      "title": "Proposal to add Forward Bit",
+      "url": "https://github.com/mjoras/sconepro-quic-protocol/pull/4",
+      "state": "MERGED",
+      "author": "mirjak",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Just an idea",
+      "createdAt": "2024-07-08T15:22:12Z",
+      "updatedAt": "2024-07-08T17:28:10Z",
+      "baseRepository": "mjoras/sconepro-quic-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "786f7439383895217a601eef5de8ea772a209378",
+      "headRepository": "mirjak/sconepro-quic-protocol",
+      "headRefName": "patch-4",
+      "headRefOid": "ea359ccff7d8804d883973546be983c7f430dfdd",
+      "closedAt": "2024-07-08T17:28:10Z",
+      "mergedAt": "2024-07-08T17:28:10Z",
+      "mergedBy": "mjoras",
+      "mergeCommit": {
+        "oid": "b45c061cde9e5c2896ed807aecc7b9cd69d7d000"
+      },
+      "comments": [
+        {
+          "author": "mjoras",
+          "authorAssociation": "OWNER",
+          "body": "Seems fine to me. This would be a nice way for usecases that only want to talk to one element to not have to manage multiple bits of feedback.",
+          "createdAt": "2024-07-08T17:27:55Z",
+          "updatedAt": "2024-07-08T17:27:55Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOMNi4I86A-Nzs",
+          "commit": {
+            "abbreviatedOid": "d3da9d0"
+          },
+          "author": "mirjak",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-07-08T16:10:34Z",
+          "updatedAt": "2024-07-08T16:10:35Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "```suggestion\r\ncapable network element on the path that support this new QUIC version.\r\n```",
+              "createdAt": "2024-07-08T16:10:35Z",
+              "updatedAt": "2024-07-08T16:10:35Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "PR_kwDOMNi4I850ufih",
+      "title": "Fixt typos",
+      "url": "https://github.com/mjoras/sconepro-quic-protocol/pull/5",
+      "state": "MERGED",
+      "author": "ihlar",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-07-08T17:50:41Z",
+      "updatedAt": "2024-07-08T18:00:11Z",
+      "baseRepository": "mjoras/sconepro-quic-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "bc98d7430a3690d52d314896e6df40aa52ead9b0",
+      "headRepository": "mjoras/sconepro-quic-protocol",
+      "headRefName": "Typos",
+      "headRefOid": "6b5d97f6aaaecedfa9ba09dd5ac417c87629e7b2",
+      "closedAt": "2024-07-08T18:00:10Z",
+      "mergedAt": "2024-07-08T18:00:10Z",
+      "mergedBy": "mjoras",
+      "mergeCommit": {
+        "oid": "e3950f13bd240fd6b8bc8273432f52dd54587b65"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 6,
+      "id": "PR_kwDOMNi4I850vZnw",
+      "title": "Grammar and spelling",
+      "url": "https://github.com/mjoras/sconepro-quic-protocol/pull/6",
+      "state": "MERGED",
+      "author": "ihlar",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-07-08T20:12:54Z",
+      "updatedAt": "2024-07-08T21:26:34Z",
+      "baseRepository": "mjoras/sconepro-quic-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "e3950f13bd240fd6b8bc8273432f52dd54587b65",
+      "headRepository": "mjoras/sconepro-quic-protocol",
+      "headRefName": "spelling",
+      "headRefOid": "cea384eea4dc048895959b06b6600f7683cc3aea",
+      "closedAt": "2024-07-08T21:26:31Z",
+      "mergedAt": "2024-07-08T21:26:31Z",
+      "mergedBy": "mjoras",
+      "mergeCommit": {
+        "oid": "fa930a07f33052371af28b0a8d9ad2b97deabcd6"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
