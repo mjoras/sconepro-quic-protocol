@@ -30,88 +30,65 @@ informative:
 --- abstract
 
 This document describes a new QUIC version. The proposed wire format and a set
-of procedures can be used to communicate network properties between a content
-endpoint and an on-path device. This is achieved by sending messages in this new
-QUIC version format adjacent to already established QUIC version 1 or version 2
-connections on the same UDP 4-tuple. The network properties are intended to
-enable self-adaptation of video media rates by content endpoints.
+of procedures can be used to communicate throughput advice between an endpoint
+and an on-path network element. Throughput advice are sent in QUIC packets of
+a new QUIC version. These QUIC packets are sent adjecent to established QUIC
+version 1 and 2 connections, within the same UDP 4-tuple.
 
 
 --- middle
 
 # Introduction
 
-The basic idea of the QUIC version described in this document is to create an
-independent message flow between a client endpoint and devices in the network,
-in parallel to an end-to-end QUIC connection [RFC 9000], to exchange network
-properties. This independent flow uses a separate version of QUIC. This document
-will not describe what information is exchanged for these properties, but rather
-the overall way in which the communication functions.
-
-The new version of QUIC described in this document adheres to the
-version-independent properties of QUIC specified in RFC 8999. This version of
-QUIC uses long headers for all its communication. The version of QUIC defined in
-this document protects packets using publicly known keys, which means that
-confidentiality and integrity of protocol payload cannot be guaranteed. The
-document describes how a connection can be upgraded to a QUIC version that
-supports full TLS protection.
-
+This document describes SCONE, a protocol for the purpose of communicating
+throughput advice from network elements to endpoints. SCONE uses QUIC
+long header packets to send throughput advice in parallel to established
+end-to-end QUIC connections.
 
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
 
-# New QUIC Version
+# SCONE Packet Format
 
-RFC 8999 defines the version independent properties of QUIC to consist of
-long and short header packets and version negotiation packets. This document
-defines a new version of QUIC which exclusively uses Long header packets.
-
-This version of QUIC has a single packet type, and a set of frame types
-used to communicate network properties. Furthermore, packets are protected
-using publicly-know keys, similar to the way Initial packets are protected
-in QUIC version 1.
-
-# QUIC Long Header Packet Format
-
-This version of QUIC only uses long header packets with the following format:
+A SCONE packet consists of a QUIC long header optionally followed by
+throughput advice fields:
 
 ~~~~~
-Long Header Packet {
+SCONE Packet {
   Header Form (1) = 1,
   Fixed Bit (1) = 0,
-  Forward Bit (1) = 0,
-  Packet Type (2) = 0,
-  Reserved Bits (3),
+  Throughput Advice Flag (1),
+  Average Window Flag (1),
+  Reserved Bits (4),
   Version (32),
   Destination Connection ID Length (8),
   Destination Connection ID (8..160),
   Source Connection ID Length (8),
   Source Connection ID (8..160),
-  Payload (..),
+  [Throughput Advice (32)],
+  [Average Window (32)]
 }
 ~~~~~
 
 Header Form:
 
 : The most significant bit (0x80) of byte 0 (the first byte) is
-set to 1 for long headers.
+set to 1 to indicate a QUIC long header.
 
 Fixed Bit:
 
 : The next bit (0x40) of byte 0 is set to 1.
 
-Forward Bit:
+Throughput Advice Flag:
 
-: The next bit (0x20) of byte 0 indicates if a network device that replies
-  to this packet should consume or forward it. By default it SHOULD be set to 0.
+: The next bit (0x20) indicates the precense of a throughput advice field
+in this packet.
 
-Packet Type:
+Average Window Flag:
 
-: The next two bits contain a packet type. A single packet type
-is defined for this protocol with the value 0b00. Future extensions MAY add
-new packet types. A network device MUST ignore packets with unknown packet
-types and SHOULD forward such packets.
+: The next bit (0x10) indicates the precense of average window field in
+this packet.
 
 Reserved Bits:
 
@@ -145,11 +122,21 @@ Source Connection ID:
   which indicates the length of this field. A Source Connection ID MUST be at
   least 8 bytes long.
 
-# Packet Protection
-This version of QUIC uses packet protection as defined for Initial packets in
-section 5 of [QUIC-TLS].
+Throughput Advice:
 
-This version of QUIC does not use packet numbers, therefore nonces are created
+: The throughput advice is a 32bit unsigned integer representing maximum
+sustainable throughput through the network element. Expressed in Kb/s.
+
+Average Window:
+
+: Indicates the duration over which the bitrate is enforced. Expressed in
+milliseconds.
+
+# Packet Protection
+SCONE uses packet protection as defined for Initial packets in section 5 of
+[QUIC-TLS].
+
+SCONE packets do not have packet numbers, therefore nonces are created
 by combining the initial Destination Connection ID with the Source Connection
 ID of the packet. A sender MUST generate a Source Connection ID with a high
 probability of being unique for each packet.
@@ -164,89 +151,32 @@ header protection keys (Section 5.4) change from "quic key" to "quicscone key",
 from "quic iv" to "quicscone iv", from "quic hp" to "quicscone hp", to meet the
 guidance for new versions in Section 9.6 of that document.
 
-# Frames
-The payload of a packet using this QUIC version consists of a sequence of
-frames. Frames consist of a type field optionally followed by type-specific
-payload.
-
-## Padding Frame
-
-Padding frames are defined in section 19.1 of [RFC9000] and are used to
-increase the size of a packet.
-
-~~~
-PADDING Frame {
-  Type (i) = 0x00,
-}
-~~~
-
-## Data Frame
-
-~~~
-DATA Frame {
-  Type (i) = 0x01,
-  Length (i),
-  Payload (..),
-}
-~~~
-
-Length:
-
-:  The length of the DATA Frame payload in bytes.
-
-Payload:
-
-:  SCONEPRO specific payload such as media bitrate information.
-
-## Alternative Hosts Frame
-
-Used to communicate alternative endpoints. This can be used to
-send a new request of QUIC version but to the network device's
-IP address and port instead of using the same 4-tuple than the
-corresponsing end-to-end QUIC connection. Alternatively, it can also
-be used to setup a full QUIC version 1 connection from the client to the nextwork
-device to obtain confidentiality and authentication of the communication.
-
-~~~
-Alternative Hosts Frame {
-  Type (i) = 0x02,
-  Host (..)..,
-}
-~~~
-
-Host:
-
-: A tuple consisting of a host name, port and a QUIC protocol version. (TODO
-define format)
-
 # Communication Overview
-The goal of this QUIC version is to provide a way to communicate properties
+The goal of SCONE is to provide a way to communicate throughput advice
 between an on-path network device and a QUIC client endpoint, with the QUIC
 client responsible for the initiation of that communication.
 
 Before establishing the communication, a QUIC client usually establishes a
 QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done,
-the client opportunistically sends a QUIC long header packet destined to the
-same endpoint IP address and port using this new version. This packet can be
-parsed by any capable network element on the path that supports this new QUIC
-version. If the Forward Bit is set, a capable element MUST forward these packets
-and send an Alternative Hosts Frame with its own IP address and port number to
-be used for further communication. This option can be used if more than one
-capable device might be on the path and needs to see the contents. All capable
-elements are able to respond to the initial packet in a similar fashion, by
-creating their own QUIC packets for this QUIC version and sending them to the
+the client opportunistically sends a SOCONE packet destined to the same
+endpoint IP address and port. This packet can be parsed by any capable network
+element on the path. If the Forward Bit is set, a capable element MUST forward
+these packets and send an Alternative Hosts Frame with its own IP address and
+port number to be used for further communication. This option can be used if
+more than one capable device might be on the path and needs to see the
+contents. All capable elements are able to respond to the initial packet in a
+similar fashion, by creating their own SCONE packets and sending them to the
 QUIC client matching the IP/port tuple being utilized by the end-to-end QUIC
 connection.
 
 The QUIC client must be able to distinguish the end-to-end QUIC version 1 or 2
-packets and the new QUIC version packets. This can be done by looking for the
-pattern of packets, combined with trial decryption.
+packets and SCONE packets.
 
 ## Use of Connection IDs
-SCONEPRO QUIC packets contain both Source and Destination Connection IDs. A
-client who initiates SCONEPRO communication sets both Source and Destination
+SCONE packets contain both Source and Destination Connection IDs. A
+client who initiates SCONE communication sets both Source and Destination
 Connection IDs to randomly generated values. A network device that 'responds'
-to a SCONEPRO QUIC packet sets the Destination Connection ID to the value of
+to a SCONE packet sets the Destination Connection ID to the value of
 the Source Connection ID of the packet it responds to. The network device sets
 the Source Connection ID to a randomly generated value.
 
