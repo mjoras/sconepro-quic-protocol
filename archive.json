@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-17T00:53:49.914721+00:00",
+  "timestamp": "2024-10-20T00:58:42.236331+00:00",
   "repo": "mjoras/sconepro-quic-protocol",
   "labels": [
     {
@@ -49,7 +49,24 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 8,
+      "id": "I_kwDOMNi4I86a3yJE",
+      "title": "S is no longer for Security",
+      "url": "https://github.com/mjoras/sconepro-quic-protocol/issues/8",
+      "state": "OPEN",
+      "author": "ihlar",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Should we consider removing the parts about encryption?",
+      "createdAt": "2024-10-18T20:14:53Z",
+      "updatedAt": "2024-10-18T20:14:53Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
   "pulls": [
     {
       "number": 1,
@@ -362,6 +379,34 @@
       "mergedBy": "mjoras",
       "mergeCommit": {
         "oid": "fa930a07f33052371af28b0a8d9ad2b97deabcd6"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 7,
+      "id": "PR_kwDOMNi4I85_JFhq",
+      "title": "Fields instead of frames, use term SCONE",
+      "url": "https://github.com/mjoras/sconepro-quic-protocol/pull/7",
+      "state": "MERGED",
+      "author": "ihlar",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Slaughtered quite a bit of the previous proposal. \r\nInstead of new kinds of frames, use fields indicated by flags in the header. \r\n\r\nAlso tried to update terminology somewhat to use SCONE and SCONE packets. ",
+      "createdAt": "2024-10-18T20:13:51Z",
+      "updatedAt": "2024-10-19T01:49:30Z",
+      "baseRepository": "mjoras/sconepro-quic-protocol",
+      "baseRefName": "main",
+      "baseRefOid": "9572bfe8133fc52f5c763249ca4dcc835fed2aaa",
+      "headRepository": "mjoras/sconepro-quic-protocol",
+      "headRefName": "ihlar-patch-1",
+      "headRefOid": "6b415649c29ccc21a6d12f0d5fe35a3657951f0e",
+      "closedAt": "2024-10-19T01:49:24Z",
+      "mergedAt": "2024-10-19T01:49:24Z",
+      "mergedBy": "mjoras",
+      "mergeCommit": {
+        "oid": "a2f092852fcb631b6a98df4c1a9ca5e4f29e6d79"
       },
       "comments": [],
       "reviews": []
