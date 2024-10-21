@@ -5,8 +5,8 @@
 Network Working Group                                           M. Joras
 Internet-Draft                                      Meta Platforms, Inc.
 Intended status: Informational                                  M. Ihlar
-Expires: 22 April 2025                                          Ericsson
-                                                         19 October 2024
+Expires: 24 April 2025                                          Ericsson
+                                                         21 October 2024
 
 
          A new QUIC version for network property communication
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 April 2025.
+   This Internet-Draft will expire on 24 April 2025.
 
 Copyright Notice
 
@@ -193,20 +193,29 @@ Table of Contents
 
    Before establishing the communication, a QUIC client usually
    establishes a QUIC version 1 or 2 end-to-end connection as per RFC
-   9000.  Once this is done, the client opportunistically sends a SOCONE
+   9000.  Once this is done, the client opportunistically sends a SCONE
    packet destined to the same endpoint IP address and port.  This
-   packet can be parsed by any capable network element on the path.  If
-   the Forward Bit is set, a capable element MUST forward these packets
-   and send an Alternative Hosts Frame with its own IP address and port
-   number to be used for further communication.  This option can be used
-   if more than one capable device might be on the path and needs to see
-   the contents.  All capable elements are able to respond to the
-   initial packet in a similar fashion, by creating their own SCONE
-   packets and sending them to the QUIC client matching the IP/port
-   tuple being utilized by the end-to-end QUIC connection.
+   packet can be parsed by any capable network element on the path.  All
+   capable elements are able to respond to the initial packet in a
+   similar fashion, by creating their own SCONE packets and sending them
+   to the QUIC client matching the IP/port tuple being utilized by the
+   end-to-end QUIC connection.
+
+   +--------+      +---------+       +--------+
+   |  QUIC  |      | Network |       |  QUIC  |
+   | Client |      | Element |       | Server |
+   +---+----+      +----+----+       +---+----+
+       |                |                |
+       +----------- QUICv1/v2 ---------->|
+       |                |                |
+       |---- SCONE ---->|---- SCONE ---->|
+       |<--- SCONE -----|                |
+       |                |                |
 
    The QUIC client must be able to distinguish the end-to-end QUIC
-   version 1 or 2 packets and SCONE packets.
+   version 1 or 2 packets and SCONE packets.  The QUIC server does not
+   need to be SCONE-aware as it will ignore the packet based on the
+   (unknown) version number.
 
 5.1.  Use of Connection IDs
 
