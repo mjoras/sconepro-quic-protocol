@@ -10,7 +10,7 @@ Expires: 24 April 2025                                          Ericsson
 
 
          A new QUIC version for network property communication
-               draft-joras-sconepro-quic-protocol-latest
+                 draft-joras-scone-quic-protocol-latest
 
 Abstract
 
