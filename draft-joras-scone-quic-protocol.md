@@ -3,7 +3,7 @@ title: "A new QUIC version for network property communication"
 abbrev: "QUIC for network property communication"
 category: info
 
-docname: draft-joras-sconepro-quic-protocol-latest
+docname: draft-joras-scone-quic-protocol-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
