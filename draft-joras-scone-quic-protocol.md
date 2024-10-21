@@ -150,7 +150,7 @@ probability of being unique for each packet.
 
 ## Public Salt
 A publicly known salt is used to derive the secrets, specifically
-sconepro_salt=0x6784619005cadc9bb961ec4d31b76892eb1b567e.
+scone_salt=0x6784619005cadc9bb961ec4d31b76892eb1b567e.
 
 ## HKDF Labels
 The labels used in [QUIC-TLS] to derive packet protection keys (Section 5.1),
