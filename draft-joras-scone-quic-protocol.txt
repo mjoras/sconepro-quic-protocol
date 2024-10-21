@@ -179,7 +179,7 @@ Table of Contents
 4.1.  Public Salt
 
    A publicly known salt is used to derive the secrets, specifically
-   sconepro_salt=0x6784619005cadc9bb961ec4d31b76892eb1b567e.
+   scone_salt=0x6784619005cadc9bb961ec4d31b76892eb1b567e.
 
 4.2.  HKDF Labels
 
