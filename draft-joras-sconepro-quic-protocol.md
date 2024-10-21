@@ -158,19 +158,29 @@ client responsible for the initiation of that communication.
 
 Before establishing the communication, a QUIC client usually establishes a
 QUIC version 1 or 2 end-to-end connection as per RFC 9000. Once this is done,
-the client opportunistically sends a SOCONE packet destined to the same
+the client opportunistically sends a SCONE packet destined to the same
 endpoint IP address and port. This packet can be parsed by any capable network
-element on the path. If the Forward Bit is set, a capable element MUST forward
-these packets and send an Alternative Hosts Frame with its own IP address and
-port number to be used for further communication. This option can be used if
-more than one capable device might be on the path and needs to see the
-contents. All capable elements are able to respond to the initial packet in a
+element on the path. All capable elements are able to respond to the initial packet in a
 similar fashion, by creating their own SCONE packets and sending them to the
 QUIC client matching the IP/port tuple being utilized by the end-to-end QUIC
 connection.
 
+~~~
++--------+      +---------+       +--------+
+|  QUIC  |      | Network |       |  QUIC  |
+| Client |      | Element |       | Server |
++---+----+      +----+----+       +---+----+
+    |                |                |
+    +----------- QUICv1/v2 ---------->|
+    |                |                |
+    |---- SCONE ---->|---- SCONE ---->|
+    |<--- SCONE -----|                |
+    |                |                |
+~~~
+
 The QUIC client must be able to distinguish the end-to-end QUIC version 1 or 2
-packets and SCONE packets.
+packets and SCONE packets. The QUIC server does not need to be SCONE-aware as
+it will ignore the packet based on the (unknown) version number.
 
 ## Use of Connection IDs
 SCONE packets contain both Source and Destination Connection IDs. A
@@ -181,7 +191,6 @@ the Source Connection ID of the packet it responds to. The network device sets
 the Source Connection ID to a randomly generated value.
 
 # On Path Verification
-
 Communication using this new QUIC version MUST only be done with network elements that can be
 verified to be on the same network path as an end to end QUIC flow. This is
 because this communication is only meant to be done with network elements
