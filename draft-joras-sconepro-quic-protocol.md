@@ -58,9 +58,10 @@ throughput advice fields:
 SCONE Packet {
   Header Form (1) = 1,
   Fixed Bit (1) = 0,
-  Throughput Advice Flag (1),
-  Average Window Flag (1),
-  Reserved Bits (4),
+  Throughput Advice Bit (1),
+  Average Window Bit (1),
+  Forward Bit (1)
+  Reserved Bits (3),
   Version (32),
   Destination Connection ID Length (8),
   Destination Connection ID (8..160),
@@ -80,15 +81,21 @@ Fixed Bit:
 
 : The next bit (0x40) of byte 0 is set to 1.
 
-Throughput Advice Flag:
+Throughput Advice Bit:
 
 : The next bit (0x20) indicates the precense of a throughput advice field
 in this packet.
 
-Average Window Flag:
+Average Window Bit:
 
 : The next bit (0x10) indicates the precense of average window field in
 this packet.
+
+Forward Bit:
+
+: The next bit (0x8) is set by clients and indicates whether the SCONE
+packet should be forwarded or consumed by the first network element that
+sees it.
 
 Reserved Bits:
 
@@ -177,6 +184,10 @@ connection.
     |<--- SCONE -----|                |
     |                |                |
 ~~~
+
+A network element that receives a SCONE packet from a client with the forward
+bit set to 1 MUST forward the packet. A network element that receives a SCONE
+packet with the forward bit set to 0 MAY drop it.
 
 The QUIC client must be able to distinguish the end-to-end QUIC version 1 or 2
 packets and SCONE packets. The QUIC server does not need to be SCONE-aware as
